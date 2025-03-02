@@ -7,13 +7,8 @@ class WhiteShark:
                 ):
         self.velocity = velocity
         self.position = position
-        self.search_space = search_space
+        self.lower_bounds = np.array([b[0] for b in search_space])
+        self.upper_bounds = np.array([b[1] for b in search_space])
         
     def adjust_position(self):
-        for i, cord in enumerate(self.position):
-            if not (self.search_space[i][0] <= cord <= self.search_space[i][1]):
-                closest_border_idx = np.argmin([
-                    np.abs(cord - self.search_space[i][0]), 
-                    np.abs(cord - self.search_space[i][1])
-                ])
-                self.position[i] = self.search_space[i][closest_border_idx]
+        self.position = np.clip(self.position, self.lower_bounds, self.upper_bounds)
